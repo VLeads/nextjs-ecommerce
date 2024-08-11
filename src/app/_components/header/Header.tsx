@@ -1,13 +1,12 @@
-import type { NextPage } from "next";
 import Link from "next/link";
-import { useMemo, type CSSProperties } from "react";
+import { FC } from "react";
 
 
 export type HeaderType = {
     className?: string;
 };
 
-const Header: NextPage<HeaderType> = ({
+const Header: FC<HeaderType> = ({
     className = "",
 }) => {
     return (
