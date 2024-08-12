@@ -34,9 +34,4 @@ const handler = (req: NextRequest) =>
         : undefined,
   });
 
-export default createNextApiHandler({
-  router: authRouter,
-  createContext: () => ({}),
-});
-
 export { handler as GET, handler as POST };
