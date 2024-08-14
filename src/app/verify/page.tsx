@@ -1,16 +1,22 @@
 "use client"
 import React, { useState, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { api } from '~/trpc/react';
 
 export default function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams()
+ 
+  const email = searchParams.get('email')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const { value } = e.target;
 
     if (isNaN(Number(value))) return;
 
-    const newOtp = [...otp];
+    const newOtp = [...otp];  
     newOtp[index] = value;
     setOtp(newOtp);
 
@@ -26,11 +32,34 @@ export default function Verify() {
     }
   };
 
-  const handleSubmit = () => {
-    alert(`Entered OTP is: ${otp.join("")}`);
+  const verifyOtp = api.auth.verifyOtp.useMutation({
+    onSuccess: () => {
+      router.push("/"); // Redirect to dashboard or home page after successful verification
+    },
+    onError: (error) => {
+      alert(error.message); // Display error message
+    },
+  });
+
+
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      alert("No email found.");
+      return;
+    }
+
+    if (typeof email !== 'string') {
+      alert("Invalid email.");
+      return;
+    }
+
+    verifyOtp.mutate({ email, otp: otp.join("") });
   };
 
   return (
+    <form onSubmit={handleSubmit}>
     <div
       className={`self-stretch flex flex-row items-start justify-center py-[0rem] px-[1.25rem] box-border max-w-full text-left text-[1rem] text-neutral-black font-inter`}
     >
@@ -65,12 +94,13 @@ export default function Verify() {
           ))}
         </div>
         <button
-          onClick={handleSubmit}
+          type="submit"
           className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition duration-200"
         >
           VERIFY
         </button>
       </div>
       </div>
+      </form>
   );
 }
