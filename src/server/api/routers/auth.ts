@@ -19,6 +19,7 @@ const transporter = nodemailer.createTransport({
 export const authRouter = createTRPCRouter({
   register: publicProcedure
     .input(z.object({
+        username: z.string(),
       email: z.string().email(),
       password: z.string().min(6),
     }))
@@ -31,11 +32,12 @@ export const authRouter = createTRPCRouter({
         throw new Error('User already exists');
       }
 
-      const otpCode = randomBytes(3).toString('hex');
+      const otpCode = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).join('');
       const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
       await prisma.user.create({
         data: {
+          username: input.username,
           email: input.email,
           password: input.password, // Hash passwords in a real app
           otp: {
@@ -53,14 +55,14 @@ export const authRouter = createTRPCRouter({
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otpCode}`,
       });
-
+console.log('success-email')
       return { success: true };
     }),
 
   verifyOtp: publicProcedure
     .input(z.object({
       email: z.string().email(),
-      otp: z.string().length(6),
+      otp: z.string().length(8),
     }))
     .mutation(async ({ input }) => {
       const otp = await prisma.otp.findFirst({

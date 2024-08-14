@@ -80,7 +80,7 @@ const Login = () => {
         </button>
         <div className="self-stretch flex flex-row items-start justify-center text-[1rem] text-neutral-500">
           <div className="flex flex-row items-start justify-start gap-[0.625rem]">
-            <div className="relative z-[1]">Don't have an Account?</div>
+            <div className="relative z-[1]">Don&apos;t have an Account?</div>
             <div
               className={`h-[1.125rem] flex flex-row items-start justify-start pt-[0rem] px-[0rem] pb-[0rem] box-border z-[1] text-left text-[1rem] text-neutral-black font-inter`}
             >
