@@ -5,9 +5,6 @@ import { env } from "~/env";
 import { appRouter } from "~/server/api/root";
 import { createTRPCContext } from "~/server/api/trpc";
 
-import { createNextApiHandler } from '@trpc/server/adapters/next';
-import { authRouter } from '~/server/api/routers/auth';
-
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
  * handling a HTTP request (e.g. when you make requests from Client Components).
