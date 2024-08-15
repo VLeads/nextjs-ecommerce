@@ -4,6 +4,7 @@ import CustomLayout from "../_components/customLayout";
 import { useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 
 const Signup = () => {
@@ -11,26 +12,23 @@ const Signup = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null); // State for error messages
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const router = useRouter();
 
   // Define mutation for signup
-  const signupMutation = api.auth.register.useMutation({
+  const signupMutation = api.signUp.signUp.useMutation({
     onSuccess: async () => {
-      console.log('success-----')
       router.push(`/verify?email=${email}`);
       setUsername("");
       setEmail("");
       setPassword("");
-      setError("");
       setIsLoading(false);
       // Optionally redirect or show a success message
     },
     onError: (error) => {
       setIsLoading(false)
-      console.log('err----')
-      setError(error.message || "An error occurred during signup.");
+      console.log('err----', error?.message)
+      toast.error(error.message || "An error occurred during signup.")
     },
   });
 
@@ -100,7 +98,6 @@ const Signup = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           className={`cursor-pointer border-neutral-black border-[1px] border-solid py-[1.062rem] px-[1.25rem] bg-neutral-black self-stretch rounded-md overflow-hidden flex flex-row items-start justify-center whitespace-nowrap hover:bg-neutral-500 hover:border-neutral-500 hover:border-[1px] hover:border-solid hover:box-border`}
           disabled={isLoading}

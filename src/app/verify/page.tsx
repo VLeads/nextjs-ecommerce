@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { api } from '~/trpc/react';
+import { toast } from 'react-toastify';
 
 export default function Verify() {
   const [otp, setOtp] = useState<string[]>(new Array(8).fill(""));
@@ -32,9 +33,10 @@ export default function Verify() {
     }
   };
 
-  const verifyOtp = api.auth.verifyOtp.useMutation({
+  const verifyOtp = api.verifyOtp.useMutation({
     onSuccess: () => {
-      router.push("/"); // Redirect to dashboard or home page after successful verification
+      router.push("/login"); // Redirect to dashboard or home page after successful verification
+      toast.success("User registered successfully!")
     },
     onError: (error) => {
       alert(error.message); // Display error message
@@ -73,7 +75,7 @@ export default function Verify() {
             </div>
             <div className="self-stretch relative text-[1rem] text-center z-[1]">
               <p className="[margin-block-start:0] [margin-block-end:4px]">{`Enter the 8 digit code you have received on `}</p>
-              <p className="m-0 font-medium">swa***@gmail.com</p>
+              <p className="m-0 font-medium">{email}</p>
             </div>
           </div>
         </div>
